@@ -15,13 +15,6 @@ namespace BussinessManager3.Models
         [Required]
         public string Name { get; set; }
 
-        [Required]
-        public int TodoId { get; set; }
-
-        [ForeignKey("TodoId")]
-        public Todo Todo { get; set; }
-
-        [Required]
-        public ICollection<Employee> Employees { get; set; } = new List<Employee>();
+        public List<Employee> Employees { get; set; }
     }
 }

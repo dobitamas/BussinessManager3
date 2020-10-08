@@ -1,51 +1,47 @@
 ﻿@model IEnumerable<BussinessManager3.Models.Group>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Groups";
 }
 
-<h1>Index</h1>
+<div style="background:aquamarine; opacity:0.9">
+    <h1>Groups</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Todo)
-            </th>
-            <th>
-                Number Of Employees
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+    <table class="table">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Todo.Descrpition)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Employees.Count)
-                </td>
-                <td>
-                    <a asp-action="AddEmployee" asp-route-id="@item.GroupId">Add Employee</a>
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.GroupId">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.GroupId">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.GroupId">Delete</a>
-                </td>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Employees)
+                </th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Employees)
+                    </td>
+                    <td>
+                        <a asp-action="AddEmployee" asp-route-id="@item.GroupId">Add Employee</a>
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.GroupId">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.GroupId">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.GroupId">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

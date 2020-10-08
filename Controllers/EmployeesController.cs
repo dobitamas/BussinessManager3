@@ -36,7 +36,7 @@ namespace BussinessManager3.Controllers
             var employee = await _context.Employees
                 .Include(e => e.Department)
                 .Include(e => e.Group)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.EmployeeId == id);
             if (employee == null)
             {
                 return NotFound();
@@ -58,7 +58,7 @@ namespace BussinessManager3.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Email,DepartmentId,GroupId")] Employee employee)
+        public async Task<IActionResult> Create([Bind("EmployeeId,Name,Email,DepartmentId,GroupId")] Employee employee)
         {
             if (ModelState.IsValid)
             {
@@ -94,9 +94,9 @@ namespace BussinessManager3.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Email,DepartmentId,GroupId")] Employee employee)
+        public async Task<IActionResult> Edit(int id, [Bind("EmployeeId,Name,Email,DepartmentId,GroupId")] Employee employee)
         {
-            if (id != employee.Id)
+            if (id != employee.EmployeeId)
             {
                 return NotFound();
             }
@@ -110,7 +110,7 @@ namespace BussinessManager3.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EmployeeExists(employee.Id))
+                    if (!EmployeeExists(employee.EmployeeId))
                     {
                         return NotFound();
                     }
@@ -137,7 +137,7 @@ namespace BussinessManager3.Controllers
             var employee = await _context.Employees
                 .Include(e => e.Department)
                 .Include(e => e.Group)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.EmployeeId == id);
             if (employee == null)
             {
                 return NotFound();
@@ -159,7 +159,7 @@ namespace BussinessManager3.Controllers
 
         private bool EmployeeExists(int id)
         {
-            return _context.Employees.Any(e => e.Id == id);
+            return _context.Employees.Any(e => e.EmployeeId == id);
         }
     }
 }

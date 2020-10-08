@@ -21,7 +21,7 @@ namespace BussinessManager3.Controllers
         // GET: Todoes
         public async Task<IActionResult> Index()
         {
-            var appDbContext = _context.Todos.Include(e => e.Group);
+            var appDbContext = _context.Todos.Include(t => t.Group);
             return View(await appDbContext.ToListAsync());
         }
 
@@ -34,18 +34,19 @@ namespace BussinessManager3.Controllers
             }
 
             var todo = await _context.Todos
-                .FirstOrDefaultAsync(m => m.ProblemId == id);
+                .Include(t => t.Group)
+                .FirstOrDefaultAsync(m => m.TodoId == id);
             if (todo == null)
             {
                 return NotFound();
             }
-
             return View(todo);
         }
 
         // GET: Todoes/Create
         public IActionResult Create()
         {
+            ViewData["GroupId"] = new SelectList(_context.Groups, "GroupId", "Name");
             return View();
         }
 
@@ -54,7 +55,7 @@ namespace BussinessManager3.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProblemId,Title,Descrpition,IsDone,GroupId")] Todo todo)
+        public async Task<IActionResult> Create([Bind("TodoId,Title,Descrpition,IsDone,GroupId")] Todo todo)
         {
             if (ModelState.IsValid)
             {
@@ -62,6 +63,7 @@ namespace BussinessManager3.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["GroupId"] = new SelectList(_context.Groups, "GroupId", "Name", todo.GroupId);
             return View(todo);
         }
 
@@ -78,6 +80,7 @@ namespace BussinessManager3.Controllers
             {
                 return NotFound();
             }
+            ViewData["GroupId"] = new SelectList(_context.Groups, "GroupId", "Name", todo.GroupId);
             return View(todo);
         }
 
@@ -86,9 +89,9 @@ namespace BussinessManager3.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProblemId,Title,Descrpition,IsDone,GroupId")] Todo todo)
+        public async Task<IActionResult> Edit(int id, [Bind("TodoId,Title,Descrpition,IsDone,GroupId")] Todo todo)
         {
-            if (id != todo.ProblemId)
+            if (id != todo.TodoId)
             {
                 return NotFound();
             }
@@ -102,7 +105,7 @@ namespace BussinessManager3.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TodoExists(todo.ProblemId))
+                    if (!TodoExists(todo.TodoId))
                     {
                         return NotFound();
                     }
@@ -113,6 +116,7 @@ namespace BussinessManager3.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["GroupId"] = new SelectList(_context.Groups, "GroupId", "Name", todo.GroupId);
             return View(todo);
         }
 
@@ -125,7 +129,8 @@ namespace BussinessManager3.Controllers
             }
 
             var todo = await _context.Todos
-                .FirstOrDefaultAsync(m => m.ProblemId == id);
+                .Include(t => t.Group)
+                .FirstOrDefaultAsync(m => m.TodoId == id);
             if (todo == null)
             {
                 return NotFound();
@@ -147,7 +152,7 @@ namespace BussinessManager3.Controllers
 
         private bool TodoExists(int id)
         {
-            return _context.Todos.Any(e => e.ProblemId == id);
+            return _context.Todos.Any(e => e.TodoId == id);
         }
     }
 }

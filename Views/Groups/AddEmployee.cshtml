@@ -1,0 +1,29 @@
+﻿@model BussinessManager3.Models.Group
+
+    <div style="background:aquamarine; opacity:0.9">
+        <h1>Add employee</h1>
+
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-controller="Groups" asp-action="AddEmployee" method="post" role="form">
+                    @{
+                        SelectList employees = ViewBag.Employees;
+                        var currentlySelectedIndex = 0;
+                    }
+                    <select asp-for"@currentlySelectedIndex" asp-items="employees" class="form-control">
+                    </select>
+                    <div class="form-group">
+                        <input type="submit" value="Add" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div>
+            <a asp-action="Index">Back to List</a>
+        </div>
+    </div>
+
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }

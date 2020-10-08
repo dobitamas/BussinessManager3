@@ -21,8 +21,8 @@ namespace BussinessManager3.Controllers
         // GET: Groups
         public async Task<IActionResult> Index()
         {
-            var appDbContext = _context.Groups.Include(a => a.Todo);
-            return View(await appDbContext.ToListAsync());
+            var cont = _context.Groups.Include(m => m.Employees);
+            return View(await cont.ToListAsync());
         }
 
         // GET: Groups/Details/5
@@ -34,7 +34,7 @@ namespace BussinessManager3.Controllers
             }
 
             var @group = await _context.Groups
-                .Include(a => a.Todo)
+                .Include(n => n.Employees)
                 .FirstOrDefaultAsync(m => m.GroupId == id);
             if (@group == null)
             {
@@ -47,9 +47,6 @@ namespace BussinessManager3.Controllers
         // GET: Groups/Create
         public IActionResult Create()
         {
-            Console.WriteLine("Here comes the counter1: " + _context.Employees.Count());
-            ViewData["TodoId"] = new SelectList(_context.Todos, "ProblemId", "Descrpition");
-            ViewData["Employees"] = new SelectList(_context.Employees, "Id", "Name");
             return View();
         }
 
@@ -58,18 +55,14 @@ namespace BussinessManager3.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("GroupId,Name,TodoId")] Group @group)
+        public async Task<IActionResult> Create([Bind("GroupId,Name")] Group @group)
         {
-            Console.WriteLine(group.Employees);
             if (ModelState.IsValid)
             {
                 _context.Add(@group);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            Console.WriteLine("Here comes the counter: " + _context.Employees.Count());
-            ViewData["TodoId"] = new SelectList(_context.Todos, "ProblemId", "Descrpition", @group.TodoId);
-            ViewData["Employees"] = new SelectList(_context.Employees, "Id", "Name", @group.Employees);
             return View(@group);
         }
 
@@ -86,7 +79,6 @@ namespace BussinessManager3.Controllers
             {
                 return NotFound();
             }
-            ViewData["TodoId"] = new SelectList(_context.Todos, "ProblemId", "Descrpition", @group.TodoId);
             return View(@group);
         }
 
@@ -95,7 +87,7 @@ namespace BussinessManager3.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("GroupId,Name,TodoId")] Group @group)
+        public async Task<IActionResult> Edit(int id, [Bind("GroupId,Name")] Group @group)
         {
             if (id != @group.GroupId)
             {
@@ -122,7 +114,6 @@ namespace BussinessManager3.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TodoId"] = new SelectList(_context.Todos, "ProblemId", "Descrpition", @group.TodoId);
             return View(@group);
         }
 
@@ -135,7 +126,6 @@ namespace BussinessManager3.Controllers
             }
 
             var @group = await _context.Groups
-                .Include(a => a.Todo)
                 .FirstOrDefaultAsync(m => m.GroupId == id);
             if (@group == null)
             {
@@ -159,6 +149,29 @@ namespace BussinessManager3.Controllers
         private bool GroupExists(int id)
         {
             return _context.Groups.Any(e => e.GroupId == id);
+        }
+
+        public IActionResult AddEmployee()
+        {
+            Console.WriteLine("First addEmployee called");
+            ViewData["Employees"] = new SelectList(_context.Employees.ToList(), "EmployeeId", "Name");
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddEmployee([Bind("GroupId,Name,Employees")] Group group)
+        {
+            Console.WriteLine("Second addEmployee called");
+            if (ModelState.IsValid)
+            {
+                _context.Groups.Add(group);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["Employees"] = new SelectList(_context.Employees, "Employees", "Name", group.Employees);
+            return View(group);
         }
     }
 }
