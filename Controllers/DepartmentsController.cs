@@ -21,7 +21,9 @@ namespace BussinessManager3.Controllers
         // GET: Departments
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Departments.ToListAsync());
+            var department = await _context.Departments.Include(x => x.Employees).ToListAsync();
+
+            return View(department);
         }
 
         // GET: Departments/Details/5
