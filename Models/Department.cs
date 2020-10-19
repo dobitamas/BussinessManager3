@@ -9,6 +9,11 @@ namespace BussinessManager3.Models
 {
     public class Department
     {
+        public Department()
+        {
+            Employees = new List<Employee>();
+        }
+
         [Key]
         public int DepartmentId { get; set; }
 
@@ -18,6 +23,6 @@ namespace BussinessManager3.Models
         [Required]
         public string Field { get; set; }
 
-        public List<Employee> Employees { get; set; }
+        public virtual ICollection<Employee> Employees { get; set; }
     }
 }

@@ -20,14 +20,14 @@ namespace BussinessManager3.Models
         [Display(Name = "Office Email")]
         public string Email { get; set; }
 
-        public int DepartmentId { get; set; }
+        public virtual int DepartmentId { get; set; }
 
         [ForeignKey("DepartmentId")]
-        public Department Department { get; set; }
+        public virtual Department Department { get; set; }
 
-        public int GroupId { get; set; }
+        public virtual int GroupId { get; set; }
 
         [ForeignKey("GroupId")]
-        public Group Group { get; set; }
+        public virtual Group Group { get; set; }
     }
 }

@@ -30,9 +30,9 @@ namespace BussinessManager3.Models
 
             modelBuilder.Entity<Department>()
                 .HasData(
-                new Department() { DepartmentId = -99, Field = "IT", Name = "Programming Department" },
-                new Department() { DepartmentId = -98, Field = "HR", Name = "Human Resorcues" },
-                new Department() { DepartmentId = -97, Field = "AD", Name = "Advertisement Department" });
+                new Department() { DepartmentId = -99, Field = "IT", Name = "Programming Department", Employees = null },
+                new Department() { DepartmentId = -98, Field = "HR", Name = "Human Resorcues", Employees = null },
+                new Department() { DepartmentId = -97, Field = "AD", Name = "Advertisement Department", Employees = null });
 
             modelBuilder.Entity<Group>()
                 .HasData(
@@ -42,6 +42,14 @@ namespace BussinessManager3.Models
             modelBuilder.Entity<Todo>()
                 .HasData(
                     new Todo() { TodoId = -99, Title = "Spilled drink in basement", Descrpition = "Someone spilled drink all over the place in the basement", IsDone = false, GroupId = -1 });
+
+            modelBuilder.Entity<Department>()
+                .HasMany(c => c.Employees)
+                .WithOne(e => e.Department);
+
+            modelBuilder.Entity<Group>()
+                .HasMany(c => c.Employees)
+                .WithOne(e => e.Group);
         }
     }
 }

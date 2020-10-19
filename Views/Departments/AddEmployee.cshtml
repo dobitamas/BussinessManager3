@@ -1,17 +1,17 @@
-﻿@model BussinessManager3.Models.Group
+﻿@model BussinessManager3.Models.Department
 
 @{
     ViewData["Title"] = "AddEmployee";
 }
 
-<h1>Add Emplyoee</h1>
+<h1>Add Employee</h1>
 
-<h4>Group</h4>
+<h4>Department</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="AddEmployee">
-            <input type="hidden" asp-for="GroupId" />
+            <input type="hidden" asp-for="DepartmentId" />
             @Html.DropDownList("Employee", (IEnumerable<SelectListItem>)ViewData["employeeList"])
             <div class="form-group">
                 <input type="submit" value="Add" class="btn btn-primary" />

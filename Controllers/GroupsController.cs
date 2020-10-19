@@ -21,8 +21,7 @@ namespace BussinessManager3.Controllers
         // GET: Groups
         public async Task<IActionResult> Index()
         {
-            var cont = _context.Groups.Include(m => m.Employees);
-            return View(await cont.ToListAsync());
+            return View(await _context.Groups.ToListAsync());
         }
 
         // GET: Groups/Details/5
@@ -34,7 +33,6 @@ namespace BussinessManager3.Controllers
             }
 
             var @group = await _context.Groups
-                .Include(n => n.Employees)
                 .FirstOrDefaultAsync(m => m.GroupId == id);
             if (@group == null)
             {
@@ -64,6 +62,55 @@ namespace BussinessManager3.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(@group);
+        }
+
+        public async Task<IActionResult> AddEmployee(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var group = await _context.Groups.FindAsync(id);
+            //var employees = await _context.Employees.ToListAsync();
+
+            ViewData["employeeList"] = new SelectList(_context.Employees.ToList(), "EmployeeId", "Name");
+            ViewData["Employees"] = null;
+
+            if (group == null)
+            {
+                return NotFound();
+            }
+
+            Console.WriteLine("Add first called");
+            //DeptEmployees info = new DeptEmployees() { department = department, employees = employees };
+            Console.WriteLine("DepartmentId before: " + group.GroupId);
+            return View(group);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddEmployee(int id, [Bind("GroupId, EmployeeId")] string Employee, Group group)
+        {
+            var gro = await _context.Groups.FindAsync(group.GroupId);
+
+            if (gro == null)
+            {
+                return NotFound();
+            }
+
+            var emp = await _context.Employees.FindAsync(int.Parse(Employee));
+
+            if (emp == null)
+            {
+                return NotFound();
+            }
+
+            gro.Employees.Add(emp);
+            _context.Update(gro);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
 
         // GET: Groups/Edit/5
@@ -149,29 +196,6 @@ namespace BussinessManager3.Controllers
         private bool GroupExists(int id)
         {
             return _context.Groups.Any(e => e.GroupId == id);
-        }
-
-        public IActionResult AddEmployee()
-        {
-            Console.WriteLine("First addEmployee called");
-            ViewData["Employees"] = new SelectList(_context.Employees.ToList(), "EmployeeId", "Name");
-
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddEmployee([Bind("GroupId,Name,Employees")] Group group)
-        {
-            Console.WriteLine("Second addEmployee called");
-            if (ModelState.IsValid)
-            {
-                _context.Groups.Add(group);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["Employees"] = new SelectList(_context.Employees, "Employees", "Name", group.Employees);
-            return View(group);
         }
     }
 }

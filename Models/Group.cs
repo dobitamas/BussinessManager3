@@ -9,12 +9,17 @@ namespace BussinessManager3.Models
 {
     public class Group
     {
+        public Group()
+        {
+            Employees = new List<Employee>();
+        }
+
         [Key]
         public int GroupId { get; set; }
 
         [Required]
         public string Name { get; set; }
 
-        public List<Employee> Employees { get; set; }
+        public ICollection<Employee> Employees { get; set; }
     }
 }

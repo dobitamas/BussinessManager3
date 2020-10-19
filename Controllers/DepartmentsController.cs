@@ -33,7 +33,11 @@ namespace BussinessManager3.Controllers
             }
 
             var department = await _context.Departments
+                .Include(x => x.Employees)
                 .FirstOrDefaultAsync(m => m.DepartmentId == id);
+
+            Console.WriteLine("Here comes counter: " + department.Employees.Count);
+
             if (department == null)
             {
                 return NotFound();
@@ -49,7 +53,7 @@ namespace BussinessManager3.Controllers
         }
 
         // POST: Departments/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -62,6 +66,55 @@ namespace BussinessManager3.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(department);
+        }
+
+        public async Task<IActionResult> AddEmployee(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var department = await _context.Departments.FindAsync(id);
+            //var employees = await _context.Employees.ToListAsync();
+
+            ViewData["employeeList"] = new SelectList(_context.Employees.ToList(), "EmployeeId", "Name");
+            ViewData["Employees"] = null;
+
+            if (department == null)
+            {
+                return NotFound();
+            }
+
+            Console.WriteLine("Add first called");
+            //DeptEmployees info = new DeptEmployees() { department = department, employees = employees };
+            Console.WriteLine("DepartmentId before: " + department.DepartmentId);
+            return View(department);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddEmployee(int id, [Bind("DepartmentId, EmployeeId")] string Employee, Department department)
+        {
+            var dept = await _context.Departments.FindAsync(department.DepartmentId);
+
+            if (dept == null)
+            {
+                return NotFound();
+            }
+
+            var emp = await _context.Employees.FindAsync(int.Parse(Employee));
+
+            if (emp == null)
+            {
+                return NotFound();
+            }
+
+            dept.Employees.Add(emp);
+            _context.Update(dept);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
 
         // GET: Departments/Edit/5
@@ -81,7 +134,7 @@ namespace BussinessManager3.Controllers
         }
 
         // POST: Departments/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
