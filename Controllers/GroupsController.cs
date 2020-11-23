@@ -21,7 +21,8 @@ namespace BussinessManager3.Controllers
         // GET: Groups
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Groups.ToListAsync());
+            var groups = await _context.Groups.Include(x => x.Employees).ToListAsync();
+            return View(groups);
         }
 
         // GET: Groups/Details/5
@@ -110,7 +111,7 @@ namespace BussinessManager3.Controllers
             _context.Update(gro);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Groups/Edit/5

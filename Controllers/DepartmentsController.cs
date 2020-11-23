@@ -116,7 +116,7 @@ namespace BussinessManager3.Controllers
             _context.Update(dept);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Departments/Edit/5
